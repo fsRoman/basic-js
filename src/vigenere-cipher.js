@@ -18,15 +18,23 @@ class VigenereCipheringMachine {
         if(msgIndex == -1 || keyIndex == -1) return v;
         else return this.alphabet[(msgIndex + keyIndex) % 26];
       })
-      .join('');
-    return result;
+    return this.direction ? result.join('') : result.reverse().join('');
   }
 
   decrypt(encryptedMessage, key) {
-    checkArguments(encryptedMessage, key);
+    this.checkArguments(encryptedMessage, key);
+    this.message = encryptedMessage.toUpperCase();
+    this.fullKey = this.getFullKey(key).toUpperCase();
+    const result = this.message
+      .split('')
+      .map((v, i) => {
+        const msgIndex = this.alphabet.indexOf(this.message[i]);
+        const keyIndex = this.alphabet.indexOf(this.fullKey[i]);
+        if(msgIndex == -1 || keyIndex == -1) return v;
+        else return this.alphabet[(msgIndex - keyIndex + 26) % 26];
+      })
+    return this.direction ? result.join('') : result.reverse().join('');
   }
-
-
 
   checkArguments(m, k){
     if(!m || !k) throw Error;
